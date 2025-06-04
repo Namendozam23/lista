@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Emergencias Hospitalarias</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loginSystem" class="login-container">
+        <div class="login-box">
+            <h2><i class="fas fa-hospital me-2"></i>Acceso al Sistema</h2>
+            <form id="loginForm">
+                <div class="mb-3">
+                    <label for="loginUser" class="form-label">Usuario</label>
+                    <input type="text" class="form-control" id="loginUser" required>
+                </div>
+                <div class="mb-3">
+                    <label for="loginPassword" class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="loginPassword" required>
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                    <button type="button" class="btn btn-link" id="showRegister">Crear nueva cuenta</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="register-box" style="display: none;">
+            <h2><i class="fas fa-user-plus me-2"></i>Registro de Usuario</h2>
+            <form id="registerForm">
+                <div class="mb-3">
+                    <label for="registerUser" class="form-label">Usuario</label>
+                    <input type="text" class="form-control" id="registerUser" required>
+                </div>
+                <div class="mb-3">
+                    <label for="registerPassword" class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="registerPassword" required>
+                        <button class="btn btn-outline-secondary" type="button" id="toggleRegisterPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="form-text">La contraseña debe tener al menos 8 caracteres</div>
+                </div>
+                <div class="mb-3">
+                    <label for="registerConfirm" class="form-label">Confirmar Contraseña</label>
+                    <input type="password" class="form-control" id="registerConfirm" required>
+                </div>
+                <div class="mb-3">
+                    <label for="registerEmail" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="registerEmail" required>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success">Registrarse</button>
+                    <button type="button" class="btn btn-link" id="showLogin">Volver al login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sistema Principal (visible después de login) -->
+    <div id="mainSystem" style="display: none;">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-hospital-alt me-2"></i>Emergencias Hospitalarias
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#"><i class="fas fa-home me-1"></i> Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><i class="fas fa-chart-bar me-1"></i> Estadísticas</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user-circle me-1"></i> <span id="currentUser"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog me-1"></i> Perfil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="card-title"><i class="fas fa-user-plus me-2"></i>Nuevo Paciente</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="patientForm">
+                                <div class="mb-3">
+                                    <label for="nombre" class="form-label">Nombre Completo</label>
+                                    <input type="text" class="form-control" id="nombre" required>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="edad" class="form-label">Edad</label>
+                                        <input type="number" class="form-control" id="edad" min="0" max="120" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="genero" class="form-label">Género</label>
+                                        <select class="form-select" id="genero" required>
+                                            <option value="" disabled selected>Seleccionar...</option>
+                                            <option value="Hombre">Hombre</option>
+                                            <option value="Mujer">Mujer</option>
+                                            <option value="No binario">No binario</option>
+                                            <option value="Otro">Otro</option>
+                                            <option value="Prefiero no decir">Prefiero no decir</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Tipo de Documento</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="tipoDocumento" id="ci" value="CI" checked>
+                                        <label class="form-check-label" for="ci">Cédula de Identidad</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="tipoDocumento" id="pasaporte" value="Pasaporte">
+                                        <label class="form-check-label" for="pasaporte">Pasaporte</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="tipoDocumento" id="extranjero" value="Documento Extranjero">
+                                        <label class="form-check-label" for="extranjero">Documento Extranjero</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="documento" class="form-label">Número de Documento</label>
+                                    <input type="text" class="form-control" id="documento" required>
+                                    <div class="form-text" id="documentoHelp">Formato requerido: X.XXX.XXX-X</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="sintomas" class="form-label">Síntomas</label>
+                                    <textarea class="form-control" id="sintomas" rows="3" required></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="gravedad" class="form-label">Nivel de Gravedad</label>
+                                    <select class="form-select" id="gravedad" required>
+                                        <option value="" disabled selected>Seleccionar...</option>
+                                        <option value="Leve">Leve (Verde)</option>
+                                        <option value="Moderado">Moderado (Amarillo)</option>
+                                        <option value="Urgente">Urgente (Naranja)</option>
+                                        <option value="Crítico">Crítico (Rojo)</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="tratamiento" class="form-label">Tratamiento Inicial</label>
+                                    <textarea class="form-control" id="tratamiento" rows="2"></textarea>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="medicamentos" class="form-label">Medicamentos Administrados</label>
+                                    <select class="form-select" id="medicamentos" multiple>
+                                        <option value="Paracetamol">Paracetamol</option>
+                                        <option value="Ibuprofeno">Ibuprofeno</option>
+                                        <option value="Amoxicilina">Amoxicilina</option>
+                                        <option value="Dipirona">Dipirona</option>
+                                        <option value="Morfina">Morfina</option>
+                                        <option value="Otro">Otro...</option>
+                                    </select>
+                                    <div class="form-text">Mantén presionado Ctrl para seleccionar múltiples opciones</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="examenes" class="form-label">Exámenes Solicitados</label>
+                                    <div class="examenes-container">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="hemograma" value="Hemograma">
+                                            <label class="form-check-label" for="hemograma">Hemograma</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="radiografia" value="Radiografía">
+                                            <label class="form-check-label" for="radiografia">Radiografía</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="tomografia" value="Tomografía">
+                                            <label class="form-check-label" for="tomografia">Tomografía</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="electro" value="Electrocardiograma">
+                                            <label class="form-check-label" for="electro">Electrocardiograma</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="eco" value="Ecografía">
+                                            <label class="form-check-label" for="eco">Ecografía</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="otrosExamenes" value="Otros">
+                                            <label class="form-check-label" for="otrosExamenes">Otros exámenes</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="observaciones" class="form-label">Observaciones</label>
+                                    <textarea class="form-control" id="observaciones" rows="2"></textarea>
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Registrar Paciente
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h3 class="card-title"><i class="fas fa-chart-pie me-2"></i>Resumen</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="stats-container">
+                                <div class="stat-item">
+                                    <div class="stat-value" id="totalPacientes">0</div>
+                                    <div class="stat-label">Total Pacientes</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value text-danger" id="criticosCount">0</div>
+                                    <div class="stat-label">Críticos</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value text-warning" id="urgentesCount">0</div>
+                                    <div class="stat-label">Urgentes</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value text-success" id="levesCount">0</div>
+                                    <div class="stat-label">Leves</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="card-title mb-0"><i class="fas fa-list me-2"></i>Lista de Pacientes</h3>
+                                <div class="input-group search-box" style="width: 250px;">
+                                    <input type="text" class="form-control" placeholder="Buscar paciente..." id="searchInput">
+                                    <button class="btn btn-light" type="button" id="searchBtn">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="patientsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Edad</th>
+                                            <th>Género</th>
+                                            <th>Documento</th>
+                                            <th>Síntomas</th>
+                                            <th>Gravedad</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Datos de pacientes se cargarán aquí -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <nav aria-label="Page navigation" class="mt-3">
+                                <ul class="pagination justify-content-center" id="pagination">
+                                    <!-- Paginación se generará dinámicamente -->
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para detalles del paciente -->
+    <div class="modal fade" id="patientModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="patientModalTitle">Detalles del Paciente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="patientModalBody">
+                    <!-- Contenido se cargará dinámicamente -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="printPatientBtn">
+                        <i class="fas fa-print me-1"></i>Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para alerta crítica -->
+    <div class="modal fade" id="criticalAlertModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Alerta Crítica</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">¡Paciente en estado crítico!</h4>
+                        <p>Se ha registrado un paciente que requiere atención inmediata.</p>
+                        <hr>
+                        <p class="mb-0" id="criticalPatientDetails"></p>
+                    </div>
+                    <div class="text-center mt-3">
+                        <i class="fas fa-ambulance fa-3x text-danger"></i>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        <i class="fas fa-check me-1"></i>Entendido
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script src="pagina.js"></script>
+</body>
+</html>
